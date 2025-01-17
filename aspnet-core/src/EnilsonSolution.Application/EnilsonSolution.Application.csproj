@@ -11,6 +11,9 @@
     <RootNamespace>EnilsonSolution</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="4.0.20505" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\EnilsonSolution.Core\EnilsonSolution.Core.csproj" />
   </ItemGroup>
 </Project>

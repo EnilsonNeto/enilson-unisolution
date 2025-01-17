@@ -4,14 +4,16 @@ using EnilsonSolution.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EnilsonSolution.Migrations
 {
     [DbContext(typeof(EnilsonSolutionDbContext))]
-    partial class EnilsonSolutionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250117160727_AlterTankIsDeleted")]
+    partial class AlterTankIsDeleted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

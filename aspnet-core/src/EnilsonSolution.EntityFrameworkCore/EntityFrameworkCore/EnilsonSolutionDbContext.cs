@@ -17,5 +17,16 @@ namespace EnilsonSolution.EntityFrameworkCore
             : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Tank>(entity =>
+            {
+                entity.HasKey(t => t.Deposit);
+                entity.Ignore(t => t.Id); 
+            });
+        }
     }
 }
