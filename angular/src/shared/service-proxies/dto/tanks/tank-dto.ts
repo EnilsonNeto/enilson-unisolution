@@ -1,13 +1,15 @@
 export interface ITankDto {
-    deposito: string;
+    deposit: string;
     capacity: number;
     productType: string;
+    IsDeleted: boolean;
 }
 
 export class TankDto implements ITankDto {
-    deposito: string;
+    deposit: string;
     capacity: number;
     productType: string;
+    IsDeleted: boolean;
 
     constructor(data?: ITankDto) {
         if (data) {
@@ -21,9 +23,10 @@ export class TankDto implements ITankDto {
 
     init(data?: any) {
         if (data) {
-            this.deposito = data["deposito"];
+            this.deposit = data["deposit"];
             this.capacity = data["capacity"];
             this.productType = data["productType"];
+            this.IsDeleted = data["IsDeleted"];
         }
     }
 
@@ -37,9 +40,10 @@ export class TankDto implements ITankDto {
 
     toJSON(data?: any) {
         data = typeof data === "object" ? data : {};
-        data["deposito"] = this.deposito;
+        data["deposit"] = this.deposit;
         data["capacity"] = this.capacity;
         data["productType"] = this.productType;
+        data["IsDeleted"] = this.IsDeleted;
 
         return data;
     }

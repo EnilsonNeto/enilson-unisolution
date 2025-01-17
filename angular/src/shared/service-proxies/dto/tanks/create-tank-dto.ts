@@ -1,36 +1,41 @@
 export interface ICreateTankDto {
-    deposito: string;
+    deposit: string;
     capacity: number;
     productType: string;
+    IsDeleted: boolean;
   }
 
   export class CreateTankDto implements ICreateTankDto {
-    deposito: string;
+    deposit: string;
     capacity: number;
     productType: string;
+    IsDeleted: boolean;
 
     constructor(data?: ICreateTankDto) {
       if (data) {
-        this.deposito = data.deposito;
+        this.deposit = data.deposit;
         this.capacity = data.capacity;
         this.productType = data.productType;
+        this.IsDeleted = data.IsDeleted;
       }
     }
 
     static fromJS(data: any): CreateTankDto {
       data = typeof data === "object" ? data : {};
       return new CreateTankDto({
-        deposito: data["deposito"],
+        deposit: data["deposit"],
         capacity: data["capacity"],
-        productType: data["productType"]
+        productType: data["productType"],
+        IsDeleted: data["IsDeleted"]
       });
     }
 
     toJSON(): any {
       return {
-        id: this.deposito,
+        deposit: this.deposit,
         capacity: this.capacity,
-        productType: this.productType
+        productType: this.productType,
+        IsDeleted: this.IsDeleted
       };
     }
   }

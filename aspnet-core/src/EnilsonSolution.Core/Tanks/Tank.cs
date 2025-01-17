@@ -4,16 +4,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EnilsonSolution.Tanks
 {
-    [Table("Tank")]
-    public class Tank : FullAuditedEntity<string>
+    [Table("Tanque")]
+    public class Tank : AuditedEntity<string>
     {
-        public const int MaxDepositoLength = 1024;
+        public const int MaxDepositLength = 1024;
         public const int MaxProductTypeLength = 512;
 
         [Key]
         [Column("Deposito")]
-        [StringLength(MaxDepositoLength)]
-        public string Deposito { get; set; } 
+        [StringLength(MaxDepositLength)]
+        public string Deposit { get; set; } 
 
         [Column("Capacidade")]
         public decimal Capacity { get; set; }
@@ -22,5 +22,7 @@ namespace EnilsonSolution.Tanks
         [Column("TipoDeProduto")]
         [StringLength(MaxProductTypeLength)]
         public string ProductType { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

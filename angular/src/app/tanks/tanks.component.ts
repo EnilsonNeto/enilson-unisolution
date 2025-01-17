@@ -1,15 +1,131 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector } from '@angular/core';
+import { finalize } from 'rxjs/operators';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { PagedListingComponentBase, PagedRequestDto, } from '@shared/paged-listing-component-base';
+import { TankDto } from '@shared/service-proxies/dto/tanks/tank-dto';
+import { TankServiceProxy } from '@shared/service-proxies/service-proxies';
+import { EditTankComponent } from './edit-tank/edit-tank.component';
+import { CreateTankComponent } from './create-tank/create-tank.component';
+import { TankDtoPagedResultDto } from '@shared/service-proxies/dto/tanks/tank-dto-paged-result.ts';
+
+class PagedTanksRequestDto extends PagedRequestDto {
+  keyword: string;
+  isActive: boolean | null;
+}
 
 @Component({
   selector: 'app-tanks',
-  templateUrl: './tanks.component.html',
-  styleUrls: ['./tanks.component.css']
+  templateUrl: './tanks.component.html'
 })
-export class TanksComponent implements OnInit {
+export class TanksComponent extends PagedListingComponentBase<TankDto> {
+  tanks: TankDto[] = [];
+  keyword = '';
+  isActive: boolean | null;
+  advancedFiltersVisible = false;
 
-  constructor() { }
+  constructor(
+    injector: Injector,
+    private _modalService: BsModalService,
+    private _tankService: TankServiceProxy
+  ) {
+    super(injector);
+  }
 
-  ngOnInit(): void {
+  filterData(): void {
+    if (this.keyword.trim() === '') {
+      this.getDataPage(1);
+    } else {
+      this.getDataPage(1);
+    }
+  }
+
+  list(
+    request: PagedTanksRequestDto,
+    pageNumber: number,
+    finishedCallback: Function
+  ): void {
+    request.keyword = this.keyword.trim().toLowerCase();
+    request.isActive = true;
+    request.skipCount = (pageNumber - 1) * request.maxResultCount;
+
+    this._tankService
+      .getAll(
+        request.keyword,
+        request.isActive,
+        request.skipCount,
+        request.maxResultCount
+      )
+      .pipe(
+        finalize(() => {
+          finishedCallback();
+        })
+      )
+      .subscribe((result: TankDtoPagedResultDto) => {
+        this.tanks = result.items.filter(tank =>
+          tank.deposit.toLowerCase().includes(request.keyword)
+        );
+        this.showPaging(result, pageNumber);
+      });
+  }
+
+  createTank(): void {
+    this.showCreateOrEditTankDialog();
+  }
+
+  editTank(tank: TankDto): void {
+    this.showCreateOrEditTankDialog(tank.deposit);
+  }
+
+  clearFilters(): void {
+    this.keyword = '';
+    this.isActive = undefined;
+    this.getDataPage(1);
+  }
+
+  delete(tank: TankDto): void {
+    abp.message.confirm(
+      this.l(`Tem certeza que deseja excluir este ${tank.deposit}`),
+      undefined,
+      (result: boolean) => {
+        if (result) {
+          this._tankService
+            .delete(tank.deposit)
+            .pipe(
+              finalize(() => {
+                abp.notify.success(this.l('SuccessfullyDeleted'));
+                this.refresh();
+              })
+            )
+            .subscribe(() => { });
+        }
+      }
+    );
+  }
+
+  showCreateOrEditTankDialog(deposit?: string): void {
+    let createOrEditTankDialog: BsModalRef;
+    if (!deposit || deposit === '') {
+      createOrEditTankDialog = this._modalService.show(
+        CreateTankComponent,
+        {
+          class: 'modal-lg'
+        }
+      );
+    } else {
+      createOrEditTankDialog = this._modalService.show(
+        EditTankComponent,
+        {
+          class: 'modal-lg',
+          initialState: {
+            deposit: deposit
+          }
+        }
+      );
+    }
+
+    createOrEditTankDialog.content.onSave.subscribe(() => {
+      this.refresh();
+    });
   }
 
 }

@@ -8,7 +8,7 @@
 // ReSharper disable InconsistentNaming
 
 import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 'rxjs/operators';
-import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
+import { Observable, throwError as _observableThrow, of as _observableOf, throwError } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { CreateTankDto } from './dto/tanks/create-tank-dto';
@@ -1746,12 +1746,12 @@ export class TankServiceProxy {
      * @return Success
      */
     create(body: CreateTankDto | undefined): Observable<TankDto> {
-        let url_ = this.baseUrl + "/api/services/app/Tank/Create";
+        let url_ = this.baseUrl + "/api/services/app/Tank/CreateTankAsync";
         url_ = url_.replace(/[?&]$/, "");
-
+    
         const content_ = JSON.stringify(body);
-
-        let options_ : any = {
+    
+        let options_: any = {
             body: content_,
             observe: "response",
             responseType: "blob",
@@ -1760,19 +1760,34 @@ export class TankServiceProxy {
                 "Accept": "text/plain"
             })
         };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processCreate(<any>response_);
-                } catch (e) {
-                    return <Observable<TankDto>><any>_observableThrow(e);
+    
+        return this.http.request("post", url_, options_).pipe(
+            _observableMergeMap((response_: any) => {
+                return this.processCreate(response_);
+            })
+        ).pipe(
+            _observableCatch((response_: any) => {
+                if (response_ instanceof HttpResponse) { // Verifica se é uma instância de HttpResponse
+                    try {
+                        // Verifique o código de status para erros específicos
+                        if (response_.status === 400) { // BadRequest
+                            // Você pode tratar os detalhes do erro aqui
+                            const errorResponse = response_.body as string;
+                            if (errorResponse.includes("Deposito já existe")) {
+                                // Retorne um erro mais específico
+                                return throwError("Erro: Já existe um tanque com o depósito informado.");
+                            }
+                        }
+                        // Caso não seja um erro específico que você tratou, processar normalmente
+                        return this.processCreate(response_);
+                    } catch (e) {
+                        return throwError(e);
+                    }
+                } else {
+                    return throwError(response_);
                 }
-            } else
-                return <Observable<TankDto>><any>_observableThrow(response_);
-        }));
+            })
+        );
     }
 
     protected processCreate(response: HttpResponseBase): Observable<TankDto> {
@@ -1798,15 +1813,15 @@ export class TankServiceProxy {
     }
 
     /**
-     * @param id (optional)
+     * @param deposit (optional)
      * @return Success
      */
-    delete(id: string | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/services/app/Tank/Delete?";
-        if (id === null || id === "")
-            throw new Error("The parameter 'id' is required.");
-        else if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+    delete(deposit: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Tank/DeleteTankAsync?";
+        if (deposit === null || deposit === "")
+            throw new Error("The parameter 'deposit' is required.");
+        else if (deposit !== undefined)
+            url_ += "deposit=" + encodeURIComponent("" + deposit) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1850,15 +1865,15 @@ export class TankServiceProxy {
     }
 
     /**
-     * @param id (optional)
+     * @param deposit (optional)
      * @return Success
      */
-    get(id: string | undefined): Observable<TankDto> {
+    get(deposit: string | undefined): Observable<TankDto> {
         let url_ = this.baseUrl + "/api/services/app/Tank/Get?";
-        if (id === null || id == "")
-            throw new Error("The parameter 'id' is required.");
-        else if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        if (deposit === null || deposit == "")
+            throw new Error("The parameter 'deposit' is required.");
+        else if (deposit !== undefined)
+            url_ += "deposit=" + encodeURIComponent("" + deposit) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1914,43 +1929,32 @@ export class TankServiceProxy {
      */
     getAll(keyword: string | undefined, isActive: boolean | undefined, skipCount: number | undefined, maxResultCount: number | undefined): Observable<TankDtoPagedResultDto> {
         let url_ = this.baseUrl + "/api/services/app/Tank/GetAll?";
-        if (keyword === null)
-            throw new Error("The parameter 'keyword' cannot be null.");
-        else if (keyword !== undefined)
-            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
-        if (isActive === null)
-            throw new Error("The parameter 'isActive' cannot be null.");
-        else if (isActive !== undefined)
-            url_ += "IsActive=" + encodeURIComponent("" + isActive) + "&";
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
+        if (keyword !== undefined && keyword !== null && keyword !== '') {  // Certifique-se de que o 'keyword' não esteja vazio
+            url_ += "Keyword=" + encodeURIComponent(keyword) + "&";
+        }
+        if (isActive !== undefined && isActive !== null) {
+            url_ += "IsActive=" + encodeURIComponent(isActive.toString()) + "&";
+        }
+        if (skipCount !== undefined && skipCount !== null) {
+            url_ += "SkipCount=" + encodeURIComponent(skipCount.toString()) + "&";
+        }
+        if (maxResultCount !== undefined && maxResultCount !== null) {
+            url_ += "MaxResultCount=" + encodeURIComponent(maxResultCount.toString()) + "&";
+        }
         url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
+    
+        let options_: any = {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Accept": "text/plain"
+                "Accept": "application/json"  // Certifique-se de que o tipo de resposta seja JSON
             })
         };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+    
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_: any) => {
             return this.processGetAll(response_);
         })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetAll(<any>response_);
-                } catch (e) {
-                    return <Observable<TankDtoPagedResultDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<TankDtoPagedResultDto>><any>_observableThrow(response_);
+            return <Observable<TankDtoPagedResultDto>>_observableThrow(response_);
         }));
     }
 
@@ -1980,13 +1984,20 @@ export class TankServiceProxy {
      * @param body (optional)
      * @return Success
      */
-    update(body: TankDto | undefined): Observable<TankDto> {
-        let url_ = this.baseUrl + "/api/services/app/Tank/Update";
+    updateTankAsync(body: TankDto | undefined): Observable<TankDto> {
+        let url_ = this.baseUrl + "/api/services/app/Tank/UpdateTankAsync?";
+
+        if (!body.deposit) {
+            throw new Error("O parâmetro 'deposit' é obrigatório.");
+        } else {
+            url_ += "deposit=" + encodeURIComponent(body.deposit);
+        }
+    
         url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
+        
+        const content_ = body ? JSON.stringify(body) : '';
+        
+        let options_: any = {
             body: content_,
             observe: "response",
             responseType: "blob",
@@ -1996,53 +2007,67 @@ export class TankServiceProxy {
             })
         };
 
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdate(<any>response_);
-                } catch (e) {
-                    return <Observable<TankDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<TankDto>><any>_observableThrow(response_);
-        }));
+        return this.http.request("put", url_, options_).pipe(
+            _observableMergeMap((response_: any) => {
+                return this.processUpdate(response_);
+            })
+        ).pipe(
+            _observableCatch((response_: any) => {
+                if (response_ instanceof HttpResponseBase) {
+                    try {
+                        return this.processUpdate(<any>response_);
+                    } catch (e) {
+                        return <Observable<TankDto>><any>_observableThrow(e);
+                    }
+                } else
+                    return <Observable<TankDto>><any>_observableThrow(response_);
+            })
+        );
     }
-
+    
     protected processUpdate(response: HttpResponseBase): Observable<TankDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+    
+        let _headers: any = {}; 
+        if (response.headers) { 
+            for (let key of response.headers.keys()) { 
+                _headers[key] = response.headers.get(key); 
+            }
+        }
+        
         if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TankDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
+            return blobToText(responseBlob).pipe(
+                _observableMergeMap(_responseText => {
+                    let result200: any = null;
+                    let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                    result200 = TankDto.fromJS(resultData200);
+                    return _observableOf(result200);
+                })
+            );
         } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
+            return blobToText(responseBlob).pipe(
+                _observableMergeMap(_responseText => {
+                    return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                })
+            );
         }
         return _observableOf<TankDto>(<any>null);
     }
 
-    getById(id: string): Observable<TankDto> {
+    getByDeposit(deposit: string): Observable<TankDto> {
         let url_ = `${this.baseUrl}/api/services/app/Tank/GetByIdAsync?`;
-
-        if (!id) {
-            throw new Error("O parâmetro 'id' é obrigatório.");
+    
+        if (!deposit) {
+            throw new Error("O parâmetro 'deposit' é obrigatório.");
         } else {
-            url_ += "id=" + encodeURIComponent(id);
+            url_ += "id=" + encodeURIComponent(deposit);
         }
-
+    
         url_ = url_.replace(/[?&]$/, "");
-
+    
         let options_: any = {
             observe: "response",
             responseType: "json",
@@ -2050,7 +2075,7 @@ export class TankServiceProxy {
                 "Accept": "application/json"
             })
         };
-
+    
         return this.http.request("get", url_, options_).pipe(
             _observableMergeMap((response_: any) => this.processGetById(response_))
         ).pipe(
@@ -2066,30 +2091,26 @@ export class TankServiceProxy {
             })
         );
     }
+    
 
     protected processGetById(response: HttpResponseBase): Observable<TankDto> {
         const status = response.status;
         const responseBody = response instanceof HttpResponse ? response.body : (<any>response).error;
-
-        let _headers: any = {};
-        if (response.headers) {
-            for (let key of response.headers.keys()) {
-                _headers[key] = response.headers.get(key);
+    
+        if (status === 200) {
+            const resultData = responseBody.result;
+            
+            if (resultData) {
+                let result: TankDto = TankDto.fromJS(resultData);
+                return _observableOf(result);
+            } else {
+                return _observableOf<TankDto>(<any>null);
             }
         }
-
-        if (status === 200) {
-            return _observableOf(responseBody).pipe(_observableMergeMap(_responseText => {
-                let result: TankDto = TankDto.fromJS(_responseText);
-                return _observableOf(result);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return _observableOf(null).pipe(_observableMergeMap(() => {
-                return throwException("An unexpected server error occurred.", status, "", _headers);
-            }));
-        }
+    
         return _observableOf<TankDto>(<any>null);
     }
+    
 }
 
 export class IsTenantAvailableInput implements IIsTenantAvailableInput {

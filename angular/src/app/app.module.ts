@@ -39,6 +39,8 @@ import { SidebarLogoComponent } from './layout/sidebar-logo.component';
 import { SidebarUserPanelComponent } from './layout/sidebar-user-panel.component';
 import { SidebarMenuComponent } from './layout/sidebar-menu.component';
 import { TanksComponent } from './tanks/tanks.component';
+import { CreateTankComponent } from './tanks/create-tank/create-tank.component';
+import { EditTankComponent } from './tanks/edit-tank/edit-tank.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +71,9 @@ import { TanksComponent } from './tanks/tanks.component';
     SidebarLogoComponent,
     SidebarUserPanelComponent,
     SidebarMenuComponent,
-    TanksComponent
+    TanksComponent,
+    CreateTankComponent,
+    EditTankComponent
   ],
   imports: [
     CommonModule,
