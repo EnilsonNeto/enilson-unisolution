@@ -4,14 +4,16 @@ using EnilsonSolution.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EnilsonSolution.Migrations
 {
     [DbContext(typeof(EnilsonSolutionDbContext))]
-    partial class EnilsonSolutionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250117035925_Added_Tanks")]
+    partial class Added_Tanks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1086,7 +1088,7 @@ namespace EnilsonSolution.Migrations
 
             modelBuilder.Entity("EnilsonSolution.Tanks.Tank", b =>
                 {
-                    b.Property<string>("Deposit")
+                    b.Property<string>("Deposito")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("Deposito")
                         .HasMaxLength(1024);
@@ -1097,6 +1099,12 @@ namespace EnilsonSolution.Migrations
                     b.Property<DateTime>("CreationTime");
 
                     b.Property<long?>("CreatorUserId");
+
+                    b.Property<long?>("DeleterUserId");
+
+                    b.Property<DateTime?>("DeletionTime");
+
+                    b.Property<string>("Id");
 
                     b.Property<bool>("IsDeleted");
 
@@ -1109,9 +1117,9 @@ namespace EnilsonSolution.Migrations
                         .HasColumnName("TipoDeProduto")
                         .HasMaxLength(512);
 
-                    b.HasKey("Deposit");
+                    b.HasKey("Deposito");
 
-                    b.ToTable("Tanque");
+                    b.ToTable("Tank");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>
