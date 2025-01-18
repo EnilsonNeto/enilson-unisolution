@@ -26,7 +26,7 @@ Este projeto é uma aplicação web criada com o objetivo de realizar o CRUD com
 Para uma visualização rápida do projeto, você pode assistir aos vídeos abaixo. Eles mostram uma demonstração das principais funcionalidades da aplicação.
 
 ![Demonstração do Projeto - Cadastro de Tanques](angular/src/assets/img/computer.gif)
-![Demonstração do Projeto - Consulta e Edição de Tanques](angular/src/assets/image/mobile.gif)
+![Demonstração do Projeto - Consulta e Edição de Tanques](angular/src/assets/img/mobile.gif)
 
 ## Como Executar o Projeto
 
