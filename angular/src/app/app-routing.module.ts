@@ -17,11 +17,11 @@ import { TanksComponent } from './tanks/tanks.component';
                 path: '',
                 component: AppComponent,
                 children: [
+                    { path: 'tanks', component: TanksComponent, data: { permission: 'Pages.Tanks' }, canActivate: [AppRouteGuard] },
                     { path: 'home', component: HomeComponent,  canActivate: [AppRouteGuard] },
                     { path: 'users', component: UsersComponent, data: { permission: 'Pages.Users' }, canActivate: [AppRouteGuard] },
                     { path: 'roles', component: RolesComponent, data: { permission: 'Pages.Roles' }, canActivate: [AppRouteGuard] },
                     { path: 'tenants', component: TenantsComponent, data: { permission: 'Pages.Tenants' }, canActivate: [AppRouteGuard] },
-                    { path: 'tanks', component: TanksComponent, data: { permission: 'Pages.Tanks' }, canActivate: [AppRouteGuard] },
                     { path: 'about', component: AboutComponent },
                     { path: 'update-password', component: ChangePasswordComponent }
                 ]
