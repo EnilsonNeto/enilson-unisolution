@@ -24,14 +24,8 @@
                 <i class="fas fa-search"></i>
               </button>
             </div>
-            <input
-            type="text"
-            class="form-control"
-            name="keyword"
-            [placeholder]="'SearchWithThreeDot' | localize"
-            [(ngModel)]="keyword"
-            (ngModelChange)="filterData()"
-          />
+            <input type="text" class="form-control" name="keyword" [placeholder]="'SearchWithThreeDot' | localize"
+              [(ngModel)]="keyword" (ngModelChange)="filterData()" />
           </div>
         </div>
         <div class="card-body table-responsive p-0">
@@ -45,8 +39,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr style="text-align: center;"
-              *ngFor="
+              <tr style="text-align: center;" *ngFor="
                       let tank of tanks
                         | paginate
                           : {
