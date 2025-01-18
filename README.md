@@ -1,37 +1,88 @@
-# Important
+## Visão Geral
 
-Issues of this repository are tracked on https://github.com/aspnetboilerplate/aspnetboilerplate. Please create your issues on https://github.com/aspnetboilerplate/aspnetboilerplate/issues.
+Este projeto é uma aplicação web criada com o objetivo de realizar o CRUD completo da tabela **Tanque**, utilizando tecnologias modernas no front-end e back-end, com uma arquitetura baseada em boas práticas de desenvolvimento.
 
-# Introduction
+### Principais Funcionalidades
 
-This is a template to create **ASP.NET Core MVC / Angular** based startup projects for [ASP.NET Boilerplate](https://aspnetboilerplate.com/Pages/Documents). It has 2 different versions:
+- **Cadastro de Tanques**: 
+  - Tela com formulário para inclusão de novos tanques, contendo os campos:
+    - **Depósito**: Descrição e chave do tanque.
+    - **Capacidade**: Capacidade do tanque.
+    - **Tipo de Produto**: Tipo de produto armazenado no tanque.
+  - Validação dos dados inseridos no formulário.
 
-1. [ASP.NET Core MVC & jQuery](https://aspnetboilerplate.com/Pages/Documents/Zero/Startup-Template-Core) (server rendered multi-page application).
-2. [ASP.NET Core & Angular](https://aspnetboilerplate.com/Pages/Documents/Zero/Startup-Template-Angular) (single page application).
- 
-User Interface is based on [AdminLTE theme](https://github.com/ColorlibHQ/AdminLTE).
- 
-# Download
+- **Consulta de Tanques**: 
+  - Listagem de todos os tanques cadastrados com as informações principais.
+  - Possibilidade de filtrar e buscar tanques específicos.
 
-Create & download your project from https://aspnetboilerplate.com/Templates
+- **Edição de Tanques**: 
+  - Permite a edição dos detalhes de um tanque previamente cadastrado.
 
-# Screenshots
+- **Exclusão de Tanques**: 
+  - Opção para excluir tanques da base de dados.
 
-#### Sample Dashboard Page
-![](_screenshots/module-zero-core-template-ui-home.png)
+## Demonstração
 
-#### User Creation Modal
-![](_screenshots/module-zero-core-template-ui-user-create-modal.png)
+Para uma visualização rápida do projeto, você pode assistir aos vídeos abaixo. Eles mostram uma demonstração das principais funcionalidades da aplicação.
 
-#### Login Page
+![Demonstração do Projeto - Cadastro de Tanques](angular/src/assets/img/computer.gif)
+![Demonstração do Projeto - Consulta e Edição de Tanques](angular/src/assets/image/mobile.gif)
 
-![](_screenshots/module-zero-core-template-ui-login.png)
+## Como Executar o Projeto
 
-# Documentation
+1. Clone este repositório para sua máquina local:
+    ```bash
+    git clone https://github.com/seuusuario/seurepositorio.git
+    ```
 
-* [ASP.NET Core MVC & jQuery version.](https://aspnetboilerplate.com/Pages/Documents/Zero/Startup-Template-Core)
-* [ASP.NET Core & Angular  version.](https://aspnetboilerplate.com/Pages/Documents/Zero/Startup-Template-Angular)
+2. Navegue até o diretório do projeto:
+    ```bash
+    cd NomeDoProjeto
+    ```
 
-# License
+3. Para o **Frontend**:
+   - Navegue até a pasta do frontend:
+     ```bash
+     cd angular-frontend
+     ```
+   - Instale as dependências utilizando o Node.js:
+     ```bash
+     npm install
+     ```
+   - Execute a aplicação:
+     ```bash
+     npm start
+     ```
 
-[MIT](LICENSE).
+4. Para o **Backend**:
+   - Navegue até a pasta do backend:
+     ```bash
+     cd backend
+     ```
+   - Abra o projeto em uma IDE compatível, como Visual Studio.
+   - Configure o banco de dados no arquivo de configuração do projeto (appsettings.json ou Web.config) com os detalhes da sua instância.
+   - Compile e execute o projeto.
+
+5. Acesse a aplicação em seu navegador:
+    - **Frontend**: `http://localhost:4200`
+    - **API**: `http://localhost:5000/api`
+
+## Endpoints da API
+
+### Tanques
+
+- **GET** `/api/tanques`: Retorna todos os tanques cadastrados.
+- **POST** `/api/tanques`: Cadastra um novo tanque.
+- **PUT** `/api/tanques/{id}`: Atualiza os dados de um tanque existente.
+- **DELETE** `/api/tanques/{id}`: Remove um tanque da base de dados.
+
+## Estrutura da Base de Dados
+
+A tabela **Tanque** foi criada com os seguintes campos:
+
+```sql
+CREATE TABLE Tanque (
+    Deposito NVARCHAR(255) PRIMARY KEY,
+    Capacidade DECIMAL(18, 2) NOT NULL,
+    TipoDeProduto NVARCHAR(255) NOT NULL
+);
