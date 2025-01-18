@@ -28,22 +28,30 @@ Para uma visualização rápida do projeto, você pode assistir aos vídeos abai
 ![Demonstração do Projeto - Cadastro de Tanques](angular/src/assets/img/computer.gif)
 ![Demonstração do Projeto - Consulta e Edição de Tanques](angular/src/assets/img/mobile.gif)
 
+## 💻 Tecnologias
+
+Esse projeto foi desenvolvido com as seguintes tecnologias:
+
+- **Frontend:** Angular 12
+- **Backend:** .NET 4.6.1 / Entity Framework Core / RESTful API
+- **Padrões:** DDD (Domain-Driven Design) e Injeção de Dependência
+
 ## Como Executar o Projeto
 
 1. Clone este repositório para sua máquina local:
     ```bash
-    git clone https://github.com/seuusuario/seurepositorio.git
+    git clone https://github.com/EnilsonNeto/enilson-unisolution.git
     ```
 
 2. Navegue até o diretório do projeto:
     ```bash
-    cd NomeDoProjeto
+    cd enilson-unisolution
     ```
 
 3. Para o **Frontend**:
    - Navegue até a pasta do frontend:
      ```bash
-     cd angular-frontend
+     cd angular
      ```
    - Instale as dependências utilizando o Node.js:
      ```bash
@@ -57,24 +65,30 @@ Para uma visualização rápida do projeto, você pode assistir aos vídeos abai
 4. Para o **Backend**:
    - Navegue até a pasta do backend:
      ```bash
-     cd backend
+     cd aspnet-core
      ```
    - Abra o projeto em uma IDE compatível, como Visual Studio.
+   - Inicialize as migrations como projeto de inicialização.    
    - Configure o banco de dados no arquivo de configuração do projeto (appsettings.json ou Web.config) com os detalhes da sua instância.
    - Compile e execute o projeto.
 
 5. Acesse a aplicação em seu navegador:
     - **Frontend**: `http://localhost:4200`
-    - **API**: `http://localhost:5000/api`
+    - **API**: `http://localhost:21021/swagger/index.html`
 
 ## Endpoints da API
 
 ### Tanques
 
-- **GET** `/api/tanques`: Retorna todos os tanques cadastrados.
-- **POST** `/api/tanques`: Cadastra um novo tanque.
-- **PUT** `/api/tanques/{id}`: Atualiza os dados de um tanque existente.
-- **DELETE** `/api/tanques/{id}`: Remove um tanque da base de dados.
+- **POST** `/api/services/app/Tank/CreateTankAsync`: Cria um novo tanque.
+- **GET** `/api/services/app/Tank/GetByIdAsync`: Retorna um tanque pelo seu ID.
+- **DELETE** `/api/services/app/Tank/DeleteTankAsync`: Exclui um tanque pelo seu ID.
+- **PUT** `/api/services/app/Tank/UpdateTankAsync`: Atualiza um tanque existente.
+- **GET** `/api/services/app/Tank/Get`: Retorna todos os tanques cadastrados.
+- **GET** `/api/services/app/Tank/GetAll`: Retorna todos os tanques cadastrados.
+- **POST** `/api/services/app/Tank/Create`: Cadastra um novo tanque.
+- **PUT** `/api/services/app/Tank/Update`: Atualiza os dados de um tanque existente.
+- **DELETE** `/api/services/app/Tank/Delete`: Remove um tanque da base de dados.
 
 ## Estrutura da Base de Dados
 
