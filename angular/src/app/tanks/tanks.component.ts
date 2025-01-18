@@ -1,12 +1,11 @@
 import { Component, Injector } from '@angular/core';
 import { finalize } from 'rxjs/operators';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { PagedListingComponentBase, PagedRequestDto, } from '@shared/paged-listing-component-base';
 import { TankDto } from '@shared/service-proxies/dto/tanks/tank-dto';
 import { TankServiceProxy } from '@shared/service-proxies/service-proxies';
-import { EditTankComponent } from './edit-tank/edit-tank.component';
-import { CreateTankComponent } from './create-tank/create-tank.component';
 import { TankDtoPagedResultDto } from '@shared/service-proxies/dto/tanks/tank-dto-paged-result.ts';
+import { TankFormComponent } from './tank-form/tank-form.component';
 
 class PagedTanksRequestDto extends PagedRequestDto {
   keyword: string;
@@ -73,7 +72,7 @@ export class TanksComponent extends PagedListingComponentBase<TankDto> {
   }
 
   editTank(tank: TankDto): void {
-    this.showCreateOrEditTankDialog(tank.deposit);
+    this.showCreateOrEditTankDialog(tank);
   }
 
   clearFilters(): void {
@@ -102,26 +101,17 @@ export class TanksComponent extends PagedListingComponentBase<TankDto> {
     );
   }
 
-  showCreateOrEditTankDialog(deposit?: string): void {
-    let createOrEditTankDialog: BsModalRef;
-    if (!deposit || deposit === '') {
-      createOrEditTankDialog = this._modalService.show(
-        CreateTankComponent,
-        {
-          class: 'modal-lg'
-        }
-      );
-    } else {
-      createOrEditTankDialog = this._modalService.show(
-        EditTankComponent,
-        {
-          class: 'modal-lg',
-          initialState: {
-            deposit: deposit
-          }
-        }
-      );
-    }
+  showCreateOrEditTankDialog(tank?: TankDto): void {
+    const createOrEditTankDialog = this._modalService.show(
+      TankFormComponent,
+      {
+        class: 'modal-lg',
+        initialState: {
+          mode: tank ? 'update' : 'create',
+          tank: tank || new TankDto(),
+        },
+      }
+    );
 
     createOrEditTankDialog.content.onSave.subscribe(() => {
       this.refresh();
