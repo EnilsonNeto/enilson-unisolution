@@ -35,6 +35,7 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 - **Frontend:** Angular 12
 - **Backend:** .NET 4.6.1 / Entity Framework Core / RESTful API
 - **Padrões:** DDD (Domain-Driven Design) e Injeção de Dependência
+- **Node:** 14.20.0
 
 ## Como Executar o Projeto
 
